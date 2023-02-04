@@ -1,0 +1,29 @@
+---
+
+- name: Configure redis
+  ansible.builtin.lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: '^(#\s*)?{{ item.key }} '
+    line: '{{ item.key }} {{ item.value }}'
+  with_items:
+    - key: maxmemory
+      value: '{{ redis_maxmemory }}'
+    - key: maxmemory-policy
+      value: allkeys-lru
+    - key: bind
+      value: '{{ redis_bind }}'
+    - key: loglevel
+      value: warning
+  become: yes
+  notify: Restart_redis
+
+- name: Add legacy password
+  ansible.builtin.lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: '^(#\s*)?requirepass '
+    line: requirepass {{ redis_requirepass }}'
+  when:
+    - redis_requirepass is defined
+    - redis_requirepass | length > 0
+  become: yes
+  notify: Restart_redis

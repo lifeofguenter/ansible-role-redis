@@ -1,0 +1,16 @@
+---
+
+- name: Download redis module
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/bpineau/redis-munin/af037f1ac83ac7e1e3aba0cb97ed2d633937efbd/redis_
+    dest: /usr/share/munin/plugins/redis_
+    mode: 'a+x'
+  become: yes
+
+- name: Enable redis plugin
+  ansible.builtin.file:
+    src: /usr/share/munin/plugins/redis_
+    dest: /etc/munin/plugins/redis_{{ redis_munin_connect }}_6379
+    state: link
+  notify: Restart_munin_node
+  become: yes
