@@ -4,4 +4,4 @@
 
   tasks:
     - ansible.builtin.import_role:
-        name: redis
+        name: project
