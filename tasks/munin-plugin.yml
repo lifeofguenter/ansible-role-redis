@@ -19,5 +19,6 @@
   ansible.builtin.template:
     src: munin-plugin.ini
     dest: /etc/munin/plugin-conf.d/redis
+    mode: '0640'
   become: yes
   notify: Restart_munin_node
