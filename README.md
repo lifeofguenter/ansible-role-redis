@@ -15,9 +15,11 @@ redis_munin_connect: '{{ redis_bind }}'
 
 redis_maxmemory: 1g
 
+redis_default_release: '{{ ansible_distribution_release }}'
+
 # optional
 
-redis_requirepass: legacy-password
+redis_requirepass:
 
 redis_tls_cert_file:
 
@@ -25,7 +27,7 @@ redis_tls_key_file:
 
 redis_tls_dh_params_file:
 
-redis_tls_ca_cert_dir:
+redis_tls_ca_cert_dir: /etc/ssl/certs
 ```
 
 ## Dependencies
