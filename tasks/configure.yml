@@ -14,6 +14,8 @@
       value: '{{ redis_bind }}'
     - key: loglevel
       value: warning
+    - key: protected-mode
+      value: '{{ redis_protected_mode }}'
   become: yes
   notify: Restart_redis
 
