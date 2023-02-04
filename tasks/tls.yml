@@ -13,9 +13,9 @@
     - key: tls-auth-clients
       value: optional
     - key: tls-replication
-      value: yes
+      value: 'yes'
     - key: tls-cluster
-      value: yes
+      value: 'yes'
     - key: tls-cert-file
       value: '{{ redis_tls_cert_file }}'
     - key: tls-key-file
@@ -32,6 +32,6 @@
     - key: tls-ciphersuites
       value: TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
     - key: tls-prefer-server-ciphers
-      value: no
+      value: 'no'
   become: yes
   notify: Restart_redis
