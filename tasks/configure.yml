@@ -21,7 +21,7 @@
   ansible.builtin.lineinfile:
     path: /etc/redis/redis.conf
     regexp: '^(#\s*)?requirepass '
-    line: requirepass {{ redis_requirepass }}'
+    line: requirepass {{ redis_requirepass }}
   when:
     - redis_requirepass is defined
     - redis_requirepass | length > 0
