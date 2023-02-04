@@ -1,0 +1,23 @@
+---
+
+- name: Import install.yml
+  ansible.builtin.import_tasks: install.yml
+
+- name: Import configure.yml
+  ansible.builtin.import_tasks: configure.yml
+
+- name: Import tls.yml
+  ansible.builtin.import_tasks: tls.yml
+  when:
+    - redis_tls_cert_file is defined
+    - redis_tls_cert_file | length > 0
+
+- name: Check if munin-node is installed
+  ansible.builtin.command: dpkg -L munin-node
+  register: dpkg_munin_node_check
+  changed_when: no
+  ignore_errors: yes
+
+- name: Import munin-plugin.yml (optional)
+  ansible.builtin.import_tasks: munin-plugin.yml
+  when: dpkg_munin_node_check is success

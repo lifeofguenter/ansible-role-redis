@@ -1,0 +1,14 @@
+---
+
+- name: Restart_redis
+  ansible.builtin.systemd:
+    name: redis-server
+    state: restarted
+    enabled: yes
+  become: yes
+
+- name: Restart_munin_node
+  ansible.builtin.systemd:
+    name: munin-node
+    state: restarted
+  become: yes

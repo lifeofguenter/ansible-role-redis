@@ -1,0 +1,23 @@
+---
+
+galaxy_info:
+  role_name: redis
+  namespace: lifeofguenter
+  author: Günter Grodotzki
+  description: Installs & configures Redis (server) on Debian-like systems.
+  license: MIT
+  min_ansible_version: '2.10'
+  platforms:
+  - name: Ubuntu
+    versions:
+      - jammy
+      - focal
+      - bionic
+  - name: Debian
+    versions:
+      - bullseye
+      - buster
+  galaxy_tags:
+    - database
+    - cache
+dependencies: []

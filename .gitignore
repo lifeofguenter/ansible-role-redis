@@ -1,0 +1,8 @@
+.DS_Store
+~*
+/.idea/
+/.env
+
+# ansible specific
+/.roles/
+*.retry
