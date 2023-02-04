@@ -5,3 +5,5 @@ redis_bind: 127.0.0.1
 redis_munin_connect: '{{ redis_bind }}'
 
 redis_maxmemory: 1g
+
+redis_default_release: '{{ ansible_distribution_release }}'
