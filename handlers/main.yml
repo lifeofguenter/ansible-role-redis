@@ -7,6 +7,13 @@
     enabled: yes
   become: yes
 
+- name: Restart_sentinel
+  ansible.builtin.systemd:
+    name: redis-sentinel
+    state: restarted
+    enabled: yes
+  become: yes
+
 - name: Restart_munin_node
   ansible.builtin.systemd:
     name: munin-node
