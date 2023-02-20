@@ -1,0 +1,11 @@
+{% if redis_requirepass is defined and redis_requirepass | length > 0 %}
+user default on #{{ redis_requirepass | password_hash('sha256') }} allkeys allchannels allcommands
+{% endif %}
+
+{% if redis_sentinel_pass is defined and redis_sentinel_pass | length > 0 %}
+user sentinel on #{{ redis_sentinel_pass | password_hash('sha256') }} allchannels +multi +slaveof +ping +exec +subscribe +config|rewrite +role +publish +info +client|setname +client|kill +script|kill
+{% endif %}
+
+{% if redis_replica_pass is defined and redis_replica_pass | length > 0 %}
+user replica on #{{ redis_replica_pass | password_hash('sha256') }} +psync +replconf +ping
+{% endif %}
