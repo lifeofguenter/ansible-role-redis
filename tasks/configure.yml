@@ -31,6 +31,9 @@
   ansible.builtin.template:
     src: users.acl
     dest: /etc/redis/users.acl
+    owner: redis
+    group: redis
+    mode: '0640'
   become: yes
   notify: Restart_redis
 
