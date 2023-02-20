@@ -13,6 +13,7 @@ jobs:
 
     steps:
       - run: sudo rm /etc/apt/sources.list.d/google.list /etc/apt/sources.list.d/heroku.list
+      - run: sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc)-backports main universe restricted multiverse"
       - run: sudo apt-get update
       - run: sudo apt remove --assume-yes --purge apparmor
       - run: sudo apt install --assume-yes net-tools
