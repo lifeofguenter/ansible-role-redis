@@ -1,5 +1,7 @@
 {% if redis_requirepass is defined and redis_requirepass | length > 0 %}
 user default on #{{ redis_requirepass | password_hash('sha256') }} allkeys allchannels allcommands
+{% else %}
+user default on nopass allkeys allchannels allcommands
 {% endif %}
 
 {% if redis_sentinel_pass is defined and redis_sentinel_pass | length > 0 %}
