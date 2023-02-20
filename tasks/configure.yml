@@ -19,13 +19,49 @@
   become: yes
   notify: Restart_redis
 
-- name: Add legacy password
+- name: Enable users.acl
   ansible.builtin.lineinfile:
     path: /etc/redis/redis.conf
-    regexp: '^(#\s*)?requirepass '
-    line: requirepass {{ redis_requirepass }}
+    regexp: '^(#\s*)?aclfile '
+    line: aclfile /etc/redis/users.acl
+  when: redis_requirepass is defined or redis_sentinel_pass is defined or redis_replica_pass is defined
+  become: yes
+  notify: Restart_redis
+
+- name: Add users.acl
+  ansible.builtin.template:
+    src: users.acl
+    dest: /etc/redis/users.acl
+    owner: redis
+    group: redis
+    mode: '0640'
+  become: yes
+  notify: Restart_redis
+
+- name: Configure masteruser
+  ansible.builtin.lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: '^(#\s*)?{{ item.key }} '
+    line: '{{ item.key }} {{ item.value }}'
+  with_items:
+    - key: masteruser
+      value: 'replica'
   when:
-    - redis_requirepass is defined
-    - redis_requirepass | length > 0
+    - redis_replica_pass is defined
+    - redis_replica_pass | length > 0
+  become: yes
+  notify: Restart_redis
+
+- name: Configure replica
+  ansible.builtin.lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: '^(#\s*)?{{ item.key }} '
+    line: '{{ item.key }} {{ item.value }}'
+  with_items:
+    - key: replicaof
+      value: '{{ redis_replica_master }} 6379'
+  when:
+    - redis_replica_master is defined
+    - redis_replica_master | length > 0
   become: yes
   notify: Restart_redis

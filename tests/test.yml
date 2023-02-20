@@ -2,6 +2,9 @@
 
 - hosts: localhost
 
+  vars:
+    redis_default_release: '{{ ansible_distribution_release }}-backports'
+
   tasks:
     - ansible.builtin.import_role:
         name: project
