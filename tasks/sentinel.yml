@@ -1,0 +1,31 @@
+---
+
+- name: Install sentinel
+  ansible.builtin.apt:
+    name: redis-sentinel
+    state: present
+    default_release: '{{ redis_default_release }}'
+    update_cache: yes
+    cache_valid_time: 3600
+  become: yes
+
+- name: Configure redis
+  ansible.builtin.lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: '^(#\s*)?{{ item.key }} '
+    line: '{{ item.key }} {{ item.value }}'
+  with_items:
+    - key: protected-mode
+      value: 'yes'
+    - key: sentinel monitor mymaster
+      value: '{{ redis_replica_master }} 6379 2'
+    - key: sentinel down-after-milliseconds mymaster
+      value: 20000
+    - key: sentinel auth-pass mymaster
+      value: '{{ redis_sentinel_pass }}'
+    - key: sentinel auth-user mymaster
+      value: sentinel
+    - key: requirepass
+      value: '{{ redis_sentinel_requirepass }}'
+  become: yes
+  notify: Restart_sentinel

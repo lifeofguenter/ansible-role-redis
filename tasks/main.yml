@@ -12,6 +12,13 @@
     - redis_tls_cert_file is defined
     - redis_tls_cert_file | length > 0
 
+- name: Import sentinel.yml
+  ansible.builtin.import_tasks: sentinel.yml
+  when:
+    - redis_sentinel_pass is defined
+    - redis_sentinel_pass | length > 0
+
+
 - name: Check if munin-node is installed
   ansible.builtin.command: dpkg -L munin-node
   register: dpkg_munin_node_check

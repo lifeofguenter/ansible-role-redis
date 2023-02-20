@@ -44,8 +44,10 @@
     regexp: '^(#\s*)?{{ item.key }} '
     line: '{{ item.key }} {{ item.value }}'
   with_items:
+    - key: masterauth
+      value: '{{ redis_replica_pass }}'
     - key: masteruser
-      value: 'replica'
+      value: replica
   when:
     - redis_replica_pass is defined
     - redis_replica_pass | length > 0
