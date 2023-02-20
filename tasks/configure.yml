@@ -24,6 +24,7 @@
     path: /etc/redis/redis.conf
     regexp: '^(#\s*)?aclfile '
     line: aclfile /etc/redis/users.acl
+  when: redis_requirepass is defined or redis_sentinel_pass is defined or redis_replica_pass is defined
   become: yes
   notify: Restart_redis
 
