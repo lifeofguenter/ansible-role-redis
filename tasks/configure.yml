@@ -61,9 +61,9 @@
     line: '{{ item.key }} {{ item.value }}'
   with_items:
     - key: replicaof
-      value: '{{ redis_replica_master }} 6379'
+      value: '{{ redis_replicaof }} 6379'
   when:
-    - redis_replica_master is defined
-    - redis_replica_master | length > 0
+    - redis_replicaof is defined
+    - redis_replicaof | length > 0
   become: yes
   notify: Restart_redis
