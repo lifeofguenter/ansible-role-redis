@@ -32,6 +32,9 @@ jobs:
           command: sudo journalctl --no-pager --unit=redis-server
           when: on_fail
       - run:
+          command: sudo cat /etc/redis/users.acl
+          when: on_fail
+      - run:
           command: sudo cat /var/log/redis/redis-server.log
           when: on_fail
 
