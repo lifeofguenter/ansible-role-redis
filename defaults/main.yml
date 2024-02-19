@@ -11,3 +11,5 @@ redis_default_release: '{{ ansible_distribution_release }}'
 redis_tls_ca_cert_dir: /etc/ssl/certs
 
 redis_protected_mode: 'yes'
+
+redis_port: 0
