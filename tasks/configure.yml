@@ -9,7 +9,7 @@
     - key: maxmemory
       value: '{{ redis_maxmemory }}'
     - key: maxmemory-policy
-      value: allkeys-lru
+      value: '{{ redis_maxmemory_policy }}'
     - key: bind
       value: '{{ redis_bind }}'
     - key: loglevel
