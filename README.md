@@ -15,6 +15,8 @@ redis_munin_connect: '{{ redis_bind }}'
 
 redis_maxmemory: 1g
 
+redis_maxmemory_policy: allkeys-lru
+
 redis_default_release: '{{ ansible_distribution_release }}'
 
 # optional
