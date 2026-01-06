@@ -5,9 +5,9 @@
     name: redis-sentinel
     state: present
     default_release: '{{ redis_default_release }}'
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 3600
-  become: yes
+  become: true
 
 - name: Configure redis
   ansible.builtin.lineinfile:
@@ -27,5 +27,5 @@
       value: sentinel
     - key: requirepass
       value: '{{ redis_sentinel_requirepass }}'
-  become: yes
+  become: true
   notify: Restart_sentinel
