@@ -4,5 +4,6 @@
 /.env
 
 # ansible specific
+/.ansible/
 /.roles/
 *.retry

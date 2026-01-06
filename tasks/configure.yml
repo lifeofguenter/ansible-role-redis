@@ -16,7 +16,9 @@
       value: warning
     - key: protected-mode
       value: '{{ redis_protected_mode }}'
-  become: yes
+    - key: databases
+      value: '{{ redis_databases | default(16) | int }}'
+  become: true
   notify: Restart_redis
 
 - name: Enable users.acl
@@ -25,7 +27,7 @@
     regexp: '^(#\s*)?aclfile '
     line: aclfile /etc/redis/users.acl
   when: redis_requirepass is defined or redis_sentinel_pass is defined or redis_replica_pass is defined
-  become: yes
+  become: true
   notify: Restart_redis
 
 - name: Add users.acl
@@ -35,7 +37,7 @@
     owner: redis
     group: redis
     mode: '0640'
-  become: yes
+  become: true
   notify: Restart_redis
 
 - name: Configure masteruser
@@ -51,7 +53,7 @@
   when:
     - redis_replica_pass is defined
     - redis_replica_pass | length > 0
-  become: yes
+  become: true
   notify: Restart_redis
 
 - name: Configure replica
@@ -65,5 +67,5 @@
   when:
     - redis_replicaof is defined
     - redis_replicaof | length > 0
-  become: yes
+  become: true
   notify: Restart_redis
