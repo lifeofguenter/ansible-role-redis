@@ -22,6 +22,14 @@
     signed_by: https://packages.redis.io/gpg
   become: true
 
+# apt's lists are refreshed at most hourly, but at once while they have
+# nothing from packages.redis.io yet: the repository was just added.
+- name: Find packages.redis.io's package lists
+  ansible.builtin.find:
+    paths: /var/lib/apt/lists
+    patterns: packages.redis.io_*_Packages*
+  register: redis_apt_lists
+
 # Only packages.redis.io's builds of the major release followed are
 # installed: they carry its epoch, 6 (the distribution's carry 5). Any
 # other version, the distribution's own included, never is.
@@ -43,6 +51,7 @@
       - redis-tools
     state: latest
     update_cache: true
+    cache_valid_time: '{{ (redis_apt_lists.matched > 0) | ternary(3600, 0) }}'
     dpkg_options: force-confdef,force-confold
   become: true
   notify: redis_restart

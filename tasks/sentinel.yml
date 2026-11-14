@@ -5,6 +5,7 @@
     name: redis-sentinel
     state: latest
     update_cache: true
+    cache_valid_time: 3600
     dpkg_options: force-confdef,force-confold
   become: true
   notify: redis_sentinel_restart
