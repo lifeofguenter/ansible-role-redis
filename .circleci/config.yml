@@ -21,6 +21,11 @@ jobs:
 
       - run: ansible --version
       - run: ansible-lint --version
+      # Ubuntu's ansible-lint comes with the schemas of its release (2023),
+      # which do not know Ubuntu 24.04 (noble). It fetches current ones only
+      # where it can write to its own files: as root, here. It exits 1 when
+      # it has fetched any.
+      - run: sudo python3 -m ansiblelint.schemas || true
 
       - checkout
 
