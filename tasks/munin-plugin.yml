@@ -13,7 +13,7 @@
     dest: /etc/munin/plugins/redis_{{ redis_munin_connect }}_6379
     state: link
   become: true
-  notify: Restart_munin_node
+  notify: redis_munin_node_restart
 
 - name: Add munin redis plugin config
   ansible.builtin.template:
@@ -21,4 +21,4 @@
     dest: /etc/munin/plugin-conf.d/redis
     mode: '0640'
   become: true
-  notify: Restart_munin_node
+  notify: redis_munin_node_restart

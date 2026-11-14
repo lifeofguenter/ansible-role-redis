@@ -1,10 +1,48 @@
 ---
 
-- name: Install redis
+# Redis from packages.redis.io rather than the distribution: its build
+# carries the modules (search, time series, JSON, bloom), which the
+# distribution's leaves out.
+
+- name: Install python3-debian
   ansible.builtin.apt:
-    name: redis
+    name: python3-debian
     state: present
-    default_release: '{{ redis_default_release }}'
     update_cache: true
     cache_valid_time: 3600
   become: true
+
+- name: Add the packages.redis.io repository
+  ansible.builtin.deb822_repository:
+    name: redis
+    types: deb
+    uris: https://packages.redis.io/deb
+    suites: '{{ ansible_distribution_release }}'
+    components: main
+    signed_by: https://packages.redis.io/gpg
+  become: true
+
+# Only packages.redis.io's builds of the major release followed are
+# installed: they carry its epoch, 6 (the distribution's carry 5). Any
+# other version, the distribution's own included, never is.
+- name: Pin the packages to packages.redis.io
+  ansible.builtin.template:
+    src: redis.pref
+    dest: /etc/apt/preferences.d/redis.pref
+    mode: '0644'
+  become: true
+
+# A Redis the distribution installed before is replaced in place, its data
+# and its /etc/redis/redis.conf kept: the configuration tasks then add what
+# the new build needs there (the modules).
+- name: Install redis # noqa: package-latest - the major release is pinned, its patches follow
+  ansible.builtin.apt:
+    name:
+      - redis
+      - redis-server
+      - redis-tools
+    state: latest
+    update_cache: true
+    dpkg_options: force-confdef,force-confold
+  become: true
+  notify: redis_restart

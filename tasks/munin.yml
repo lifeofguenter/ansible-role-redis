@@ -1,0 +1,7 @@
+---
+
+- name: Check if munin-node is installed
+  ansible.builtin.command: dpkg -L munin-node
+  register: redis_munin_node_check
+  changed_when: false
+  failed_when: "'command not found' in redis_munin_node_check.stderr"

@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+#
+# packages.redis.io's builds of Redis {{ redis_version }} (epoch 6; the
+# distribution's are epoch 5), and no other version.
+
+Package: redis redis-server redis-tools redis-sentinel
+Pin: version 6:{{ redis_version }}.*
+Pin-Priority: 1001
+
+Package: redis redis-server redis-tools redis-sentinel
+Pin: version *
+Pin-Priority: -1

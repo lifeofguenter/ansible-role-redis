@@ -8,7 +8,18 @@ redis_maxmemory: 1g
 
 redis_maxmemory_policy: allkeys-lru
 
-redis_default_release: '{{ ansible_distribution_release }}'
+# The major release followed: packages.redis.io's newest of it is installed
+# on every run, and nothing else.
+redis_version: 8
+
+# The modules loaded at start, of those packages.redis.io's Redis comes
+# with: search and query (FT.*), time series (TS.*), JSON and the
+# probabilistic types (BF.* and the others).
+redis_modules:
+  - redisearch
+  - redistimeseries
+  - rejson
+  - redisbloom
 
 redis_tls_ca_cert_dir: /etc/ssl/certs
 

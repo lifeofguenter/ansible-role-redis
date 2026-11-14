@@ -34,4 +34,4 @@
     - key: tls-prefer-server-ciphers
       value: 'no'
   become: true
-  notify: Restart_redis
+  notify: redis_restart

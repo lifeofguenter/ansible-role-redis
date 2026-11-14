@@ -1,11 +1,18 @@
 ---
 
+# packages.redis.io's unit runs Redis in the foreground and waits for it to
+# say it is ready (Type=notify): a redis.conf from the distribution, whose
+# unit passed both on the command line, says otherwise.
 - name: Configure redis
   ansible.builtin.lineinfile:
     path: /etc/redis/redis.conf
     regexp: '^(#\s*)?{{ item.key }} '
     line: '{{ item.key }} {{ item.value }}'
   with_items:
+    - key: daemonize
+      value: 'no'
+    - key: supervised
+      value: systemd
     - key: maxmemory
       value: '{{ redis_maxmemory }}'
     - key: maxmemory-policy
@@ -19,7 +26,23 @@
     - key: databases
       value: '{{ redis_databases | default(16) | int }}'
   become: true
-  notify: Restart_redis
+  notify: redis_restart
+
+# packages.redis.io's own redis.conf loads every module, but a Redis
+# installed before keeps the redis.conf it had, which loads none.
+- name: Load the modules
+  ansible.builtin.lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: '^(#\s*)?loadmodule /usr/lib/redis/modules/{{ item }}\.so'
+    line: loadmodule /usr/lib/redis/modules/{{ item }}.so
+    state: "{{ (item in redis_modules) | ternary('present', 'absent') }}"
+  loop:
+    - redisearch
+    - redistimeseries
+    - rejson
+    - redisbloom
+  become: true
+  notify: redis_restart
 
 - name: Enable users.acl
   ansible.builtin.lineinfile:
@@ -28,7 +51,7 @@
     line: aclfile /etc/redis/users.acl
   when: redis_requirepass is defined or redis_sentinel_pass is defined or redis_replica_pass is defined
   become: true
-  notify: Restart_redis
+  notify: redis_restart
 
 - name: Add users.acl
   ansible.builtin.template:
@@ -38,7 +61,7 @@
     group: redis
     mode: '0640'
   become: true
-  notify: Restart_redis
+  notify: redis_restart
 
 - name: Configure masteruser
   ansible.builtin.lineinfile:
@@ -54,7 +77,7 @@
     - redis_replica_pass is defined
     - redis_replica_pass | length > 0
   become: true
-  notify: Restart_redis
+  notify: redis_restart
 
 - name: Configure replica
   ansible.builtin.lineinfile:
@@ -68,4 +91,4 @@
     - redis_replicaof is defined
     - redis_replicaof | length > 0
   become: true
-  notify: Restart_redis
+  notify: redis_restart
