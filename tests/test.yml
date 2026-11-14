@@ -3,7 +3,6 @@
 - hosts: localhost
 
   vars:
-    redis_default_release: '{{ ansible_distribution_release }}-backports'
     redis_databases: 32
 
   tasks:

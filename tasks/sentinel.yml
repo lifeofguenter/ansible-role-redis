@@ -1,15 +1,16 @@
 ---
 
-- name: Install sentinel
+- name: Install sentinel # noqa: package-latest - the major release is pinned, its patches follow
   ansible.builtin.apt:
     name: redis-sentinel
-    state: present
-    default_release: '{{ redis_default_release }}'
+    state: latest
     update_cache: true
     cache_valid_time: 3600
+    dpkg_options: force-confdef,force-confold
   become: true
+  notify: redis_sentinel_restart
 
-- name: Configure redis
+- name: Configure sentinel
   ansible.builtin.lineinfile:
     path: /etc/redis/sentinel.conf
     regexp: '^(#\s*)?{{ item.key }} '
@@ -28,4 +29,4 @@
     - key: requirepass
       value: '{{ redis_sentinel_requirepass }}'
   become: true
-  notify: Restart_sentinel
+  notify: redis_sentinel_restart

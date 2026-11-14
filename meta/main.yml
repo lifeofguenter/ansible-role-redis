@@ -6,18 +6,16 @@ galaxy_info:
   author: Günter Grodotzki
   description: Installs & configures Redis (server) on Debian-like systems.
   license: MIT
-  min_ansible_version: '2.10'
+  min_ansible_version: '2.15'
   platforms:
   - name: Ubuntu
     versions:
       - noble
       - jammy
-      - focal
   - name: Debian
     versions:
       - trixie
       - bookworm
-      - bullseye
   galaxy_tags:
     - database
     - cache

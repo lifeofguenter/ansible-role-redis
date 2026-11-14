@@ -1,21 +1,24 @@
 ---
 
-- name: Restart_redis
-  ansible.builtin.systemd:
+- name: Restart redis
+  listen: redis_restart
+  ansible.builtin.systemd_service:
     name: redis-server
     state: restarted
     enabled: true
   become: true
 
-- name: Restart_sentinel
-  ansible.builtin.systemd:
+- name: Restart sentinel
+  listen: redis_sentinel_restart
+  ansible.builtin.systemd_service:
     name: redis-sentinel
     state: restarted
     enabled: true
   become: true
 
-- name: Restart_munin_node
-  ansible.builtin.systemd:
+- name: Restart munin-node
+  listen: redis_munin_node_restart
+  ansible.builtin.systemd_service:
     name: munin-node
     state: restarted
   become: true

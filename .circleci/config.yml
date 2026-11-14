@@ -7,23 +7,28 @@ jobs:
   build:
     machine:
       # https://circleci.com/docs/2.0/configuration-reference/#machine
-      image: ubuntu-2204:2025.09.1
+      image: ubuntu-2404:2026.10.1
     environment:
       ANSIBLE_PYTHON_INTERPRETER: /usr/bin/python3
+      # the checkout is the role "project" (tests/test.yml)
+      ANSIBLE_ROLES_PATH: ..
 
     steps:
       - run: sudo rm -f /etc/apt/sources.list.d/google* /etc/apt/sources.list.d/heroku*
       - run: sudo apt-get update
       - run: sudo apt remove --assume-yes --purge apparmor
-      - run: sudo apt install --assume-yes net-tools
-      - run: pip3 install ansible ansible-lint
+      - run: sudo apt install --assume-yes net-tools ansible-core ansible-lint
 
       - run: ansible --version
       - run: ansible-lint --version
+      # Ubuntu's ansible-lint comes with the schemas of its release (2023),
+      # which do not know Ubuntu 24.04 (noble). It fetches current ones only
+      # where it can write to its own files: as root, here. It exits 1 when
+      # it has fetched any.
+      - run: sudo python3 -m ansiblelint.schemas || true
 
       - checkout
 
-      - run: printf '[defaults]\nroles_path=../' > ansible.cfg
       - run: ansible-lint
 
       - run: ansible-playbook tests/test.yml -i tests/inventory --connection=local
@@ -42,4 +47,9 @@ jobs:
 
       - run: redis-cli --version
       - run: redis-cli INFO
+      # the modules are loaded: search and time series answer
+      - run: redis-cli MODULE LIST | grep -x search
+      - run: redis-cli MODULE LIST | grep -x timeseries
+      - run: redis-cli FT._LIST
+      - run: redis-cli TS.ADD probe 1 1
       - run: netstat -lnp
